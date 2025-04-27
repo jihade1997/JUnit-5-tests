@@ -1,7 +1,9 @@
 package com.healthycoderapp;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class BMICalculatorTest {
-	
+	private String env = "dev";
 	@BeforeAll
 	static void beforeAll() {
 		System.out.println("Before all unit tests !");
@@ -33,6 +35,17 @@ class BMICalculatorTest {
 	@ParameterizedTest
 	@ValueSource(doubles = {89.0, 95.0, 110.})
 	void should_ReturnTrue_When_DieTRecommended_withParameters(double coderweight) {
+		
+	//======================================================================================================
+	/* with assume if the test is wromg it doesn't fail it is just skipped 
+	so it is better to use assert instead of assume 
+	when we want to import there are two choices, it is fine to use .api.assumptions class based on JUnit 5 doc 
+	org.junit.Assume It is also possible to use methods from JUnit 4’s org.junit.Assume class
+	for assumptions. Specifically, JUnit Jupiter supports JUnit 4’s AssumptionViolatedException
+	to signal that a test should be aborted instead of marked as a failure. */
+	//======================================================================================================
+	
+	assumeTrue(this.env.equals("prod"));
 	//given
 	double weight = coderweight;
 	double height = 1.72;
@@ -148,6 +161,23 @@ class BMICalculatorTest {
 	   
 	}
 	
+	
+	// check the performance test 
+	@Test
+	void should_ReturnCoderWithWorstBMIIn1mS_When_CoderListHas10000Elements() {
+	    // given
+	    List<Coder> coders = new ArrayList<>();
+	    for (int i= 0;i < 10000;i++) {
+	    	coders.add(new Coder(1.0 + i, 10.0 + i));
+	    }
+	    // when
+        Executable executable = () -> BMICalculator.findCoderWithWorstBMI(coders);
+	    // then
+	    assertTimeout(Duration.ofMillis(500), executable);
+	}
+	   
+	   
+	
 	// check the equality of an array
 	@Test
 	void should_ReturnCorrectBMIscoreArray_When_CoderListNotEmpty() {
@@ -164,5 +194,8 @@ class BMICalculatorTest {
 	    
 	   
 	}
+	
+	
+		
 	
 }
