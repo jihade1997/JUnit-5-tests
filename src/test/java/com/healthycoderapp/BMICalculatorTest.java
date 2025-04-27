@@ -11,9 +11,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -34,11 +38,16 @@ class BMICalculatorTest {
 	}
 	
 	// Nested is added to organize the code especially when we have a lot of tests.
+	
 	@Nested
+	@DisplayName(" {{}}} sample inner class display name")
 	class findDieTRecommended {
 		// check with @ParameterizedTest
 		@ParameterizedTest
 		@ValueSource(doubles = { 89.0, 95.0, 110. })
+		@DisplayName(" >>>>> sample inner method display name")
+		@Disabled
+		// disabled to skip the execution of the method if we want to ignore test under certain conditions  @DisabledOnOs(OS.WINDOWS)
 		void should_ReturnTrue_When_DieTRecommended_withParameters(double coderweight) {
 
 			// ======================================================================================================
@@ -67,6 +76,8 @@ class BMICalculatorTest {
 		// check with @ParameterizedTest with @CsvSource
 		@ParameterizedTest(name = "weight={0}, height={1}")
 		@CsvSource(value = { "89.0, 1.72", "95.0, 1.75", "110. , 1.78" })
+		@DisabledOnOs(OS.MAC)
+		// disabled to skip the execution of the method if we want to ignore test under certain conditions  @DisabledOnOs(OS.WINDOWS)
 		void should_ReturnTrue_When_DieTRecommended_withCsvSource(double coderweight, double coderHeight) {
 			// given
 			double weight = coderweight;
